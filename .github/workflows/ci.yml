@@ -1,26 +1,27 @@
-name: Ci Practice
+name: CI Practice
 
 on:
- push:
- branches:
-  -main
-pull_request:
+  push:
+    branches:
+      - main
+  pull_request:
 
-job:
+jobs:
   build-and-test:
-    runs-on: ubuntu-lastest
+    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout source code
-        uses: action/checkout@v3
+        uses: actions/checkout@v3
 
       - name: Set up Docker Compose
-        run:
-            docker compose up -d
-            echo "⏳ Waiting for containers to initialize..."
-            sleep 20
-      - name: Run test inside web container
-        run: docker compose exec -it web curl http://localhost:5000/api/user
+        run: |
+          docker compose up -d
+          echo "⏳ Waiting for containers to initialize..."
+          sleep 20
 
+      - name: Run test inside web container
+        run: docker compose exec web curl http://localhost:5000/api/user
 
       - name: Shutdown Docker Compose
         if: always()
